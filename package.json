@@ -10,9 +10,13 @@
     "Other"
   ],
   "icon": "images/mobio.png",
-  "publisher": "boivn@mobio.io",
+  "publisher": "boivn",
   "activationEvents": [],
   "main": "./dist/extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vuboi/mobio-log.git"
+  },
   "contributes": {
     "commands": [
       {
