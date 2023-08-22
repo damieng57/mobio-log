@@ -48,7 +48,7 @@
       {
         "title": "MobioLog",
         "properties": {
-          "mobio-log.quote": {
+          "mobio-log.quotes": {
             "type": "string",
             "enum": [
               "\"",
@@ -56,22 +56,22 @@
               "`"
             ],
             "default": "\"",
-            "description": "Double quotes, single quotes or backtick"
+            "description": "Log with type quotes"
           },
           "mobio-log.prefix": {
             "type": "string",
-            "default": "==>",
-            "description": "Prefix of log message"
+            "default": "",
+            "description": "Log with prefix"
           },
-          "mobio-log.fileName": {
+          "mobio-log.file": {
             "type": "boolean",
             "default": false,
-            "description": "Get file name log message"
+            "description": "Log with file name"
           },
-          "mobio-log.lineNumber": {
+          "mobio-log.line": {
             "type": "boolean",
             "default": false,
-            "description": "Get line number log message"
+            "description": "Log with line number"
           }
         }
       }
