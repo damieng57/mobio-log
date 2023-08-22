@@ -4,6 +4,7 @@ export interface ISettingsConfig {
   line: string;
   file: string;
 }
+
 export type IConfig = 'quotes' | 'prefix' | 'line' | 'file';
 
 export enum TYPE_QUOTES {
