@@ -11,7 +11,9 @@ export function activate(context: vscode.ExtensionContext) {
 		const cursorPosition = editor.selection.start;
 		const wordRange = editor.document.getWordRangeAtPosition(cursorPosition);
 		const text = editor.document.getText(wordRange);
+		const currentLine = text.split("\n")[cursorPosition.line];
 		if (!wordRange) {
+			currentLine.trim() && await vscode.commands.executeCommand("editor.action.insertLineAfter");
 			editor.edit((editBuilder) => {
 				editBuilder.insert(editor.selection.active, `console.log(${quotes}${prefix}${quotes});`);
 			});
