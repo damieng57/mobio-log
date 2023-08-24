@@ -10,10 +10,13 @@ export function activate(context: vscode.ExtensionContext) {
 		/*  Get Word */
 		const cursorPosition = editor.selection.start;
 		const wordRange = editor.document.getWordRangeAtPosition(cursorPosition);
-		const text = editor.document.getText(wordRange);
-		const currentLine = text.split("\n")[cursorPosition.line];
+		const textHighLight = editor.document.getText(wordRange);
+		const selectionText = editor.document.getText(editor.selection);
+		const text = selectionText.length > textHighLight.length ? selectionText : textHighLight;
+		const textCurrentLine = (text.split("\n")[cursorPosition.line]);
+
 		if (!wordRange) {
-			currentLine.trim() && await vscode.commands.executeCommand("editor.action.insertLineAfter");
+			textCurrentLine.trim() && await vscode.commands.executeCommand("editor.action.insertLineAfter");
 			editor.edit((editBuilder) => {
 				editBuilder.insert(editor.selection.active, `console.log(${quotes}${prefix}${quotes});`);
 			});

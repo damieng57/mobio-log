@@ -2,7 +2,7 @@
   "name": "mobio-log",
   "displayName": "Mobio Console",
   "description": "Faster console.log",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "engines": {
     "vscode": "^1.81.0"
   },
@@ -60,7 +60,7 @@
           },
           "mobio-log.prefix": {
             "type": "string",
-            "default": "",
+            "default": "==>",
             "description": "Log with prefix"
           },
           "mobio-log.file": {
