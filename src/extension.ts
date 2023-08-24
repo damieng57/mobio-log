@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 		const selectionText = editor.document.getText(editor.selection);
 		const text = selectionText.length > textHighLight.length ? selectionText : textHighLight;
 		const textCurrentLine = (text.split("\n")[cursorPosition.line]);
-
+		if (!isCanConsole()) { return; }
 		if (!wordRange) {
 			textCurrentLine.trim() && await vscode.commands.executeCommand("editor.action.insertLineAfter");
 			editor.edit((editBuilder) => {
@@ -22,14 +22,11 @@ export function activate(context: vscode.ExtensionContext) {
 			});
 			return;
 		}
-
 		await vscode.commands.executeCommand("editor.action.insertLineAfter");
 		editor.edit((editBuilder) => {
 			editBuilder.insert(editor.selection.active, `console.log(${quotes}${prefix}${file}${line}${text}: ${quotes}, ${text});`);
 		});
 	});
-
-	context.subscriptions.push(disposable);
 }
 
 export function getSettingConfig(editor: vscode.TextEditor): ISettingsConfig {
@@ -40,6 +37,15 @@ export function getSettingConfig(editor: vscode.TextEditor): ISettingsConfig {
 		line: vsCodeGet('line') ? `LINE: ${editor.selection.active.line + 2} - ` : '',
 		file: vsCodeGet('file') ? `FILE: ${editor.document.fileName.split('/').pop()} - ` : ''
 	};
+}
+
+export function isCanConsole(): boolean {
+	const activeEditor = vscode.window.activeTextEditor;
+	const languageId = activeEditor?.document.languageId;
+	if (!languageId) { return false; }
+	if (languageId === 'javascript' || languageId === 'typescript' || languageId === 'javascriptreact') { return true; }
+	vscode.window.showInformationMessage('Language not type of Javascript !!!');
+	return false;
 }
 
 export function deactivate() { }
