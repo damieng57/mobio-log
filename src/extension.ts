@@ -7,7 +7,7 @@ export function activate(context: vscode.ExtensionContext) {
 		if (!editor) { return; }
 		/* Get Config */
 		const { quotes, prefix, line, file } = getSettingConfig(editor);
-		/*  Get Word */
+		/* Get Word */
 		const cursorPosition = editor.selection.start;
 		const wordRange = editor.document.getWordRangeAtPosition(cursorPosition);
 		const textHighLight = editor.document.getText(wordRange);
