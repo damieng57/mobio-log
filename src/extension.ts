@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { IConfig, ISettingsConfig, TYPE_QUOTES } from './interfaces/settings-config.interface';
 
 export function activate(context: vscode.ExtensionContext) {
-	let disposable = vscode.commands.registerCommand('mobio-log.log', async () => {
+	vscode.commands.registerCommand('mobio-log.log', async () => {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) { return; }
 		/* Get Config */
@@ -12,10 +12,11 @@ export function activate(context: vscode.ExtensionContext) {
 		const wordRange = editor.document.getWordRangeAtPosition(cursorPosition);
 		const textHighLight = editor.document.getText(wordRange);
 		const selectionText = editor.document.getText(editor.selection);
-		const text = selectionText.length > textHighLight.length ? selectionText : textHighLight;
+		const cursorInText = cursorPosition.character > 0 && cursorPosition.character < editor.document.lineAt(cursorPosition.line).text.length;
+		const text = selectionText.length === 0 ? textHighLight : selectionText;
 		const textCurrentLine = (text.split("\n")[cursorPosition.line]);
 		if (!isCanConsole()) { return; }
-		if (!wordRange) {
+		if (!cursorInText && !selectionText) {
 			textCurrentLine.trim() && await vscode.commands.executeCommand("editor.action.insertLineAfter");
 			editor.edit((editBuilder) => {
 				editBuilder.insert(editor.selection.active, `console.log(${quotes}${prefix}${quotes});`);
