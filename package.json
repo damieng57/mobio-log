@@ -2,9 +2,9 @@
   "name": "mobio-log",
   "displayName": "Mobio Console",
   "description": "Faster console.log",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "engines": {
-    "vscode": "^1.81.0"
+    "vscode": "^1.82.x"
   },
   "categories": [
     "Other"
