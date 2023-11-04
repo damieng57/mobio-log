@@ -22,6 +22,14 @@
       {
         "command": "mobio-log.log",
         "title": "Mobio Log"
+      },
+      {
+        "command": "mobio-log-before.log",
+        "title": "Mobio Log Before"
+      },
+      {
+        "command": "mobio-log-after.log",
+        "title": "Mobio Log After"
       }
     ],
     "keybindings": [
@@ -29,6 +37,18 @@
         "command": "mobio-log.log",
         "key": "alt+c",
         "mac": "alt+c",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "mobio-log-before.log",
+        "key": "alt+x",
+        "mac": "alt+x",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "mobio-log-after.log",
+        "key": "alt+v",
+        "mac": "alt+v",
         "when": "editorTextFocus"
       }
     ],
@@ -57,6 +77,11 @@
             ],
             "default": "\"",
             "description": "Log with type quotes"
+          },
+          "mobio-log.position": {
+            "type": "boolean",
+            "default": true,
+            "description": "Add console.log after the text. If false, it will be before the text"
           },
           "mobio-log.prefix": {
             "type": "string",

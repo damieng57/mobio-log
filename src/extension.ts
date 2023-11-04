@@ -1,12 +1,31 @@
 import * as vscode from 'vscode';
 import { IConfig, ISettingsConfig, TYPE_QUOTES } from './interfaces/settings-config.interface';
 
+enum OS {
+	WINDOWS = "win32",
+	LINUX = "linux",
+	MAC = "darwin"
+  }
+
+interface IMobioOptions {
+	before?: boolean;
+	after?: boolean;
+}
+
 export function activate(context: vscode.ExtensionContext) {
-	vscode.commands.registerCommand('mobio-log.log', async () => {
+	vscode.commands.registerCommand('mobio-log-before.log', async () => {
+		vscode.commands.executeCommand('mobio-log.log', { before: true });
+	});
+
+	vscode.commands.registerCommand('mobio-log-after.log', async () => {
+		vscode.commands.executeCommand('mobio-log.log', { after: true });
+	});
+
+	vscode.commands.registerCommand('mobio-log.log', async (args: IMobioOptions) => {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) { return; }
 		/* Get Config */
-		const { quotes, prefix, line, file } = getSettingConfig(editor);
+		const { quotes, prefix, line, file, position } = getSettingConfig(editor);
 		/* Get Word */
 		const cursorPosition = editor.selection.start;
 		const wordRange = editor.document.getWordRangeAtPosition(cursorPosition);
@@ -16,14 +35,20 @@ export function activate(context: vscode.ExtensionContext) {
 		const text = selectionText.length === 0 ? textHighLight : selectionText;
 		const textCurrentLine = (text.split("\n")[cursorPosition.line]);
 		if (!isCanConsole()) { return; }
+		/* Get action */
+		let action = "editor.action.insertLineAfter";
+		if ((!position && args && !args.after) || (args && args.before) || (!position && !args)) {
+			action = "editor.action.insertLineBefore";
+		}
+
 		if (!cursorInText && !selectionText) {
-			textCurrentLine.trim() && await vscode.commands.executeCommand("editor.action.insertLineAfter");
+			textCurrentLine.trim() && await vscode.commands.executeCommand(action);
 			editor.edit((editBuilder) => {
 				editBuilder.insert(editor.selection.active, `console.log(${quotes}${prefix}${quotes});`);
 			});
 			return;
 		}
-		await vscode.commands.executeCommand("editor.action.insertLineAfter");
+		await vscode.commands.executeCommand(action);
 		editor.edit((editBuilder) => {
 			editBuilder.insert(editor.selection.active, `console.log(${quotes}${prefix}${file}${line}${text}: ${quotes}, ${text});`);
 		});
@@ -33,6 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
 export function getSettingConfig(editor: vscode.TextEditor): ISettingsConfig {
 	const vsCodeGet = (config: IConfig) => vscode.workspace.getConfiguration("mobio-log").get(config);
 	return {
+		position: vsCodeGet('position') as boolean,
 		quotes: vsCodeGet('quotes') as TYPE_QUOTES || TYPE_QUOTES.DOUBLE,
 		prefix: vsCodeGet('prefix') ? `${vsCodeGet('prefix')} ` : '',
 		line: vsCodeGet('line') ? `LINE: ${editor.selection.active.line + 2} - ` : '',
