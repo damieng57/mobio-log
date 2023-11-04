@@ -57,12 +57,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 export function getSettingConfig(editor: vscode.TextEditor): ISettingsConfig {
 	const vsCodeGet = (config: IConfig) => vscode.workspace.getConfiguration("mobio-log").get(config);
+	const platform = process.platform;
+	const separator = platform === OS.WINDOWS ? '\\' : '/';
 	return {
 		position: vsCodeGet('position') as boolean,
 		quotes: vsCodeGet('quotes') as TYPE_QUOTES || TYPE_QUOTES.DOUBLE,
 		prefix: vsCodeGet('prefix') ? `${vsCodeGet('prefix')} ` : '',
 		line: vsCodeGet('line') ? `LINE: ${editor.selection.active.line + 2} - ` : '',
-		file: vsCodeGet('file') ? `FILE: ${editor.document.fileName.split('/').pop()} - ` : ''
+		file: vsCodeGet('file') ? `FILE: ${editor.document.fileName.split(separator).pop()} - ` : ''
 	};
 }
 
