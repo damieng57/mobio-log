@@ -83,6 +83,11 @@
             "default": true,
             "description": "Add console.log after the text. If false, it will be before the text"
           },
+          "mobio-log.semicolon": {
+            "type": "boolean",
+            "default": true,
+            "description": "Add semi-colon at the end of your console.log"
+          },
           "mobio-log.prefix": {
             "type": "string",
             "default": "➡️",

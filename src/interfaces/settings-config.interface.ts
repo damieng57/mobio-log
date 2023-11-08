@@ -1,4 +1,4 @@
-import { EColors } from "./extension.interface";
+import { TYPE_COLORS } from "./extension.interface";
 
 export interface ISettingsConfig {
   quotes: TYPE_QUOTES;
@@ -6,11 +6,12 @@ export interface ISettingsConfig {
   line: string;
   file: string;
   position: boolean;
+  semicolon: string;
   colorEnable: boolean;
-  color: EColors;
+  color: TYPE_COLORS;
 }
 
-export type IConfig = 'quotes' | 'prefix' | 'line' | 'file' | 'position' | 'color' | 'colorEnable';
+export type IConfig = 'quotes' | 'prefix' | 'line' | 'file' | 'position' | 'color' | 'colorEnable' | 'semicolon';
 
 export enum TYPE_QUOTES {
   DOUBLE = "\"",
