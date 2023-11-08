@@ -85,13 +85,24 @@
           },
           "mobio-log.prefix": {
             "type": "string",
-            "default": "==>",
+            "default": "➡️",
             "description": "Log with prefix"
           },
           "mobio-log.file": {
             "type": "boolean",
             "default": false,
             "description": "Log with file name"
+          },
+          "mobio-log.colorEnable": {
+            "type": "boolean",
+            "default": false,
+            "description": "Enable log color"
+          },
+          "mobio-log.color": {
+            "type": "string",
+            "enum": ["red", "green", "yellow", "blue", "magenta", "cyan"],
+            "default": "green",
+            "descriptions": "Choose color for your log"
           },
           "mobio-log.line": {
             "type": "boolean",

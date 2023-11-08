@@ -1,16 +1,6 @@
 import * as vscode from 'vscode';
 import { IConfig, ISettingsConfig, TYPE_QUOTES } from './interfaces/settings-config.interface';
-
-enum OS {
-	WINDOWS = "win32",
-	LINUX = "linux",
-	MAC = "darwin"
-  }
-
-interface IMobioOptions {
-	before?: boolean;
-	after?: boolean;
-}
+import { EColors, IMobioOptions, OS } from './interfaces/extension.interface';
 
 export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('mobio-log-before.log', async () => {
@@ -25,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) { return; }
 		/* Get Config */
-		const { quotes, prefix, line, file, position } = getSettingConfig(editor);
+		const { quotes, prefix, line, file, position, color, colorEnable } = getSettingConfig(editor);
 		/* Get Word */
 		const cursorPosition = editor.selection.start;
 		const wordRange = editor.document.getWordRangeAtPosition(cursorPosition);
@@ -34,6 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 		const cursorInText = cursorPosition.character > 0 && cursorPosition.character < editor.document.lineAt(cursorPosition.line).text.length;
 		const text = selectionText.length === 0 ? textHighLight : selectionText;
 		const textCurrentLine = (text.split("\n")[cursorPosition.line]);
+		const style = colorEnable ? `${color}%s%s${EColors.reset}` : '';
 		if (!isCanConsole()) { return; }
 		/* Get action */
 		let action = "editor.action.insertLineAfter";
@@ -44,13 +35,13 @@ export function activate(context: vscode.ExtensionContext) {
 		if (!cursorInText && !selectionText) {
 			textCurrentLine.trim() && await vscode.commands.executeCommand(action);
 			editor.edit((editBuilder) => {
-				editBuilder.insert(editor.selection.active, `console.log(${quotes}${prefix}${quotes});`);
+				editBuilder.insert(editor.selection.active, `console.log(${quotes}${style}${quotes}, ${quotes}${prefix}${quotes}, ${quotes}${quotes});`);
 			});
 			return;
 		}
 		await vscode.commands.executeCommand(action);
 		editor.edit((editBuilder) => {
-			editBuilder.insert(editor.selection.active, `console.log(${quotes}${prefix}${file}${line}${text}: ${quotes}, ${text});`);
+			editBuilder.insert(editor.selection.active, `console.log(${quotes}${style}${quotes}, ${quotes}${prefix}${file}${line}${text}: ${quotes} , ${text});`);
 		});
 	});
 }
@@ -60,6 +51,9 @@ export function getSettingConfig(editor: vscode.TextEditor): ISettingsConfig {
 	const platform = process.platform;
 	const separator = platform === OS.WINDOWS ? '\\' : '/';
 	return {
+		// @ts-ignore
+		color: EColors[vsCodeGet('color')],
+		colorEnable: vsCodeGet('colorEnable') as boolean,
 		position: vsCodeGet('position') as boolean,
 		quotes: vsCodeGet('quotes') as TYPE_QUOTES || TYPE_QUOTES.DOUBLE,
 		prefix: vsCodeGet('prefix') ? `${vsCodeGet('prefix')} ` : '',
