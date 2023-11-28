@@ -1,6 +1,12 @@
 import * as vscode from 'vscode';
 import { IConfig, ISettingsConfig, TYPE_QUOTES } from './interfaces/settings-config.interface';
 
+enum OS {
+	WINDOWS = "win32",
+	LINUX = "linux",
+	MAC = "darwin"
+  }
+
 export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('mobio-log.log', async () => {
 		const editor = vscode.window.activeTextEditor;
@@ -32,11 +38,12 @@ export function activate(context: vscode.ExtensionContext) {
 
 export function getSettingConfig(editor: vscode.TextEditor): ISettingsConfig {
 	const vsCodeGet = (config: IConfig) => vscode.workspace.getConfiguration("mobio-log").get(config);
+	const platform = process.platform;
 	return {
 		quotes: vsCodeGet('quotes') as TYPE_QUOTES || TYPE_QUOTES.DOUBLE,
 		prefix: vsCodeGet('prefix') ? `${vsCodeGet('prefix')} ` : '',
 		line: vsCodeGet('line') ? `LINE: ${editor.selection.active.line + 2} - ` : '',
-		file: vsCodeGet('file') ? `FILE: ${editor.document.fileName.split('/').pop()} - ` : ''
+		file: vsCodeGet('file') ? `FILE: ${editor.document.fileName.split(platform === OS.WINDOWS ? '\\' : '/').pop()} - ` : ''
 	};
 }
 
